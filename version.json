@@ -1,6 +1,6 @@
 {
-  "version": "1.0.1",
-  "buildNumber": 16,
-  "changelog": "Released via GitHub Actions. Commit: 46672890d792e0b28f8e819b2c93ece389fb41cb",
-  "downloadUrl": "https://github.com/perrintong325/nexum-android-releases/raw/main/releases/nexum-v16.apk"
+  "version": "1.0.17",
+  "buildNumber": 17,
+  "changelog": "Released via GitHub Actions. Commit: d7b26161b95df38775ee50fdcf71ade531c813d7",
+  "downloadUrl": "https://github.com/perrintong325/nexum-android-releases/raw/main/releases/nexum-v17.apk"
 }
