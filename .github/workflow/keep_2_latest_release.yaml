@@ -1,0 +1,62 @@
+name: Keep latest 2 files in release
+
+on:
+  push:
+    paths:
+      - "release/**"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  prune:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Delete all but newest 2 files in release
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          FOLDER="release"
+          KEEP=2
+
+          # List ONLY regular files, sorted by modification time (newest first).
+          mapfile -t files < <(
+            find "$FOLDER" -maxdepth 1 -type f -printf "%T@ %p\n" \
+              | sort -nr \
+              | awk '{print $2}' \
+          )
+
+          if [ "${#files[@]}" -le "$KEEP" ]; then
+            echo "Nothing to delete (have ${#files[@]} files, keeping $KEEP)."
+            exit 0
+          fi
+
+          echo "Keeping:"
+          printf '  %s\n' "${files[@]:0:$KEEP}"
+
+          echo "Deleting:"
+          for f in "${files[@]:$KEEP}"; do
+            echo "  $f"
+            rm -f -- "$f"
+          done
+
+      - name: Commit changes if any
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git status --porcelain | grep .; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add -A
+            git commit -m "Prune old files in release (keep latest 2)"
+            git push
+          else
+            echo "No changes to commit."
+          fi
