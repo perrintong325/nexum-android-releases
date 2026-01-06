@@ -1,9 +1,9 @@
-name: Keep latest 2 files in release
+name: Keep latest 2 files in releases
 
 on:
   push:
     paths:
-      - "release/**"
+      - "releases/**"
   workflow_dispatch:
 
 permissions:
@@ -18,12 +18,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Delete all but newest 2 files in release
+      - name: Delete all but newest 2 files in releases
         shell: bash
         run: |
           set -euo pipefail
 
-          FOLDER="release"
+          FOLDER="releases"
           KEEP=2
 
           # List ONLY regular files, sorted by modification time (newest first).
@@ -55,7 +55,7 @@ jobs:
             git config user.name "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
             git add -A
-            git commit -m "Prune old files in release (keep latest 2)"
+            git commit -m "Prune old files in releases (keep latest 2)"
             git push
           else
             echo "No changes to commit."
